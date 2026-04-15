@@ -22,9 +22,9 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Configure simulation parameters.")
 parser.add_argument("--num_cores", type=int, default=4, help="Number of CPU cores.")
-parser.add_argument("--l1_size", type=str, default="1KiB", help="L1 cache size.")
-parser.add_argument("--l2_size", type=str, default="4KiB", help="L2 cache size.")
-
+parser.add_argument("--l1_size", type=str, default="32KiB", help="L1 cache size.")
+parser.add_argument("--l2_size", type=str, default="256KiB", help="L2 cache size.")
+parser.add_argument("--network", type=str, default="pt2pt", choices=["pt2pt", "circle", "crossbar"])
 args = parser.parse_args()
 
 cache_hiearchy = MESITwoLevelCacheHierarchy(
@@ -35,6 +35,7 @@ cache_hiearchy = MESITwoLevelCacheHierarchy(
     l2_size=args.l2_size,
     l2_assoc=8,
     num_l2_banks=1,
+    network_type=args.network
 )
 
 processor = SimpleProcessor(
@@ -53,7 +54,7 @@ board = SimpleBoard(
     cache_hierarchy=cache_hiearchy,
 )
 
-binary = CustomResource("../workload/stream/stream.bin")
+binary = CustomResource("./workload/stream/stream.bin")
 board.set_se_binary_workload(binary)
 
 simulator = Simulator(board=board)

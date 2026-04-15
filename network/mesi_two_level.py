@@ -78,6 +78,7 @@ class MESITwoLevelCacheHierarchy(
         l2_size: str,
         l2_assoc: str,
         num_l2_banks: int,
+        network_type: str,
     ):
         AbstractRubyCacheHierarchy.__init__(self=self)
         AbstractTwoLevelCacheHierarchy.__init__(
@@ -88,8 +89,9 @@ class MESITwoLevelCacheHierarchy(
             l1d_assoc=l1d_assoc,
             l2_size=l2_size,
             l2_assoc=l2_assoc,
+            
         )
-
+        self._network_type = network_type
         self._num_l2_banks = num_l2_banks
 
     @overrides(AbstractCacheHierarchy)
@@ -107,7 +109,15 @@ class MESITwoLevelCacheHierarchy(
         self.ruby_system.number_of_virtual_networks = 3
 
         # Create the network 
-        self.ruby_system.network = SimplePt2Pt(self.ruby_system)
+        # self.ruby_system.network = SimplePt2Pt(self.ruby_system)
+        if self._network_type == "pt2pt":
+            self.ruby_system.network = SimplePt2Pt(self.ruby_system)
+        elif self._network_type == "circle": 
+            self.ruby_system.network = Circle(self.ruby_system)
+        elif self._network_type == "crossbar":
+            self.ruby_system.network = Crossbar(self.ruby_system)
+        else:
+            raise ValueError("Unknown network type")
         self.ruby_system.network.number_of_virtual_networks = 3
 
         # For each core, create an L1 cache and connect it to the core. Also create sequencer for each L1 cache.
@@ -400,5 +410,4 @@ class Directory(MESI_Two_Level_Directory_Controller):
         self.responseFromDir.out_port = network.in_port
         self.requestToMemory = MessageBuffer()
         self.responseFromMemory = MessageBuffer()
-
 

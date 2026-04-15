@@ -53,7 +53,7 @@ board = SimpleBoard(
     cache_hierarchy=cache_hiearchy,
 )
 
-binary = CustomResource("../workload/parallel_prefix/pprefix_optimized.bin")
+binary = CustomResource("./workload/parallel_prefix/pprefix_optimized.bin")
 board.set_se_binary_workload(binary)
 
 simulator = Simulator(board=board)

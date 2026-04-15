@@ -22,9 +22,9 @@ import m5
 import argparse
 
 parser = argparse.ArgumentParser(description="Configure simulation parameters.")
-parser.add_argument("--num_cores", type=int, default=4, help="Number of CPU cores.")
+parser.add_argument("--num_cores", type=int, default=2, help="Number of CPU cores.")
 parser.add_argument("--l1_size", type=str, default="32KiB", help="L1 cache size.")
-parser.add_argument("--l2_size", type=str, default="512KiB", help="L2 cache size.")
+parser.add_argument("--l2_size", type=str, default="256KiB", help="L2 cache size.")
 parser.add_argument("--l3_size", type=str, default="2MiB", help="L3 cache size.")
 
 args = parser.parse_args()
@@ -62,7 +62,7 @@ board = SimpleBoard(
       
 )
 
-binary = CustomResource("../workload/cholesky/cholesky.bin")
+binary = CustomResource("./workload/cholesky/cholesky.bin")
 
 board.set_se_binary_workload(binary)
 
